@@ -1,9 +1,7 @@
 import sys
 # asks the user to login register or quit
-start = input("Login, Register, or Quit: ")
 
 def login():
-    while True:
         # asks the user for their username or password
         username = input("What is your username: ")
         password = input("What is your password: ")
@@ -52,13 +50,20 @@ def change_password():
         #gets the new pasword that the user added and replaces it with the changed one
         #
 
-if start == "Login":
-    #logs in with login function
-    login()
-elif start == "Register":
-    #registers in with register function
-    Register()
-elif start == "Quit":
-    #returns to terminal 
-    print("Goodbye")
-    sys.exit(1)
+def main():
+    while True:
+        start = input("Login, Register, or Quit: ").strip().lower()
+        if start in ["login", "register", "quit"]:
+            if start == "login":
+            #logs in with login function
+                login()
+            elif start == "register":
+            #registers in with register function
+                Register()
+            elif start == "quit":
+            #returns to terminal 
+                print("Goodbye")
+                sys.exit()
+        print("Please input one of the previous options")
+
+main() #cheeky main 
