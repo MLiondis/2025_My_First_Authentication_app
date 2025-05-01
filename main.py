@@ -1,24 +1,43 @@
 import sys
 import bcrypt
-# asks the user to login register or quit
 
+
+def main():
+    while True:
+        start = input("Login, Register, or Quit: ").strip().lower()
+        if start in ["login", "register", "quit"]:
+            if start == "login":
+            #logs in with login function
+                login()
+            elif start == "register":
+            #registers in with register function
+                Register()
+            elif start == "quit":
+            #returns to terminal 
+                print("Goodbye")
+                sys.exit(0)
+        print("Please input one of the previous options")
+
+# asks the user to login register or quit
 def login():
+        global username
         # asks the user for their username or password
-        username = input("What is your username: ")
-        password = input("What is your password: ")
-        #opens the txt file for altering
-        try:
-            with open("plain_text.txt", "r") as file:
-                credentials = [line.strip() for line in file]
-            user_pass = f"{username},{password}"
-            if user_pass in credentials:
-                print("logged in successfully")
-                change_password()
-            else:
-                print("username or password incorrect")
-        except FileNotFoundError:
-            print("Error: The file 'plain_text.txt' does not exist.")
-            sys.exit(0)
+        while True:
+            username = input("What is your username: ")
+            password = input("What is your password: ")
+            #opens the txt file for altering
+            try:
+                with open("plain_text.txt", "r") as file:
+                    credentials = [line.strip() for line in file]
+                user_pass = f"{username},{password}"
+                if user_pass in credentials:
+                    print("logged in successfully")
+                    change_password()
+                else:
+                    print("username or password incorrect")
+            except FileNotFoundError:
+                print("Error: The file 'plain_text.txt' does not exist.")
+                sys.exit(0)
 
 def Register():
     #registers a new password and username
@@ -50,10 +69,10 @@ def change_password():
     while True:
         start3 = input("Change password or Quit: ").strip().lower()
         if start3 in ["change password", "quit"]:
-            if start3 == "Quit":
+            if start3 == "quit":
                 print("Goodbye!")
                 sys.exit(0)
-            elif start3 == "Change password":
+            elif start3 == "change password":
                 new_password = input("New password: ")
                 hashed_password = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt())
                 rows = []
@@ -72,21 +91,7 @@ def change_password():
                     file.write("\n".join(rows) + "\n")
                 print("Password changed successfully!")
 
-def main():
-    while True:
-        start = input("Login, Register, or Quit: ").strip().lower()
-        if start in ["login", "register", "quit"]:
-            if start == "login":
-            #logs in with login function
-                login()
-            elif start == "register":
-            #registers in with register function
-                Register()
-            elif start == "quit":
-            #returns to terminal 
-                print("Goodbye")
-                sys.exit(0)
-        print("Please input one of the previous options")
+
 
 def ispasswordvalid(password):
     if len(password) < 4:

@@ -5,6 +5,5 @@ grogu,patu
 there_is_no_try,Yoda
 MyRey,I Am All The Jedi
 Luke,May the Force be with you
-
-michael,Mliond1$
-kevien,project10
+michael,$2b$12$CV/eSwMYRR6WcqkmD1o12e6ZoiiNREXw.cIdfgrk3FqX0NgfOBbju
+ari,$2b$12$m7hCZJAXeBJg.SS5a7Qpk.LQjOmfMB4X36dJu0fWYk4r7w1QejR7i
