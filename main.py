@@ -1,4 +1,5 @@
 import sys
+import bcrypt
 # asks the user to login register or quit
 
 def login():
@@ -8,24 +9,18 @@ def login():
         #opens the txt file for altering
         try:
             with open("plain_text.txt", "r") as file:
-                for line in file:
-                    #splits it into name and password
-                    row = line.split(",")
-                    check_username = row[0]
-                    check_password = row[1]
-                    if username in check_username and password in check_password:
-                        print("Logged in successfuly!")
-                        #changes the password with the function
-                        change_password()
-                    elif username not in check_username or password not in check_password:
-                        print("Incorrect username or passwword")
+                credentials = [line.strip() for line in file]
+            user_pass = f"{username},{password}"
+            if user_pass in credentials:
+                print("logged in successfully")
+                change_password()
+            else:
+                print("username or password incorrect")
         except FileNotFoundError:
             print("Error: The file 'plain_text.txt' does not exist.")
-            sys.exit(1)
+            sys.exit(0)
 
 def Register():
-    global new_password
-    global new_username
     #registers a new password and username
     new_username = input("New username: ")
     while True:
@@ -37,7 +32,7 @@ def Register():
                     file.write(f"\n{new_username},{new_password}")
             except FileNotFoundError:
                 print("Error: The file 'plain_text.txt' does not exist.")
-                sys.exit(1)
+                sys.exit(0)
             print(f"{new_username} has been registered!")
             while True:
                 start2 = input("Login or Quit: ").strip().lower()
@@ -48,20 +43,34 @@ def Register():
                     elif start2 == "quit":
                         #returns to terminal
                         print("Goobye!")
-                        sys.exit(1)
+                        sys.exit(0)
 
 
 def change_password():
-    start3 = input("Change password or Quit: ")
-    if start3 == "Quit":
-        print("Goodbye!")
-        sys.exit(1)
-    elif start3 == "Change password":
-        newest_password = input("New password: ")
-        #Pseudocode:
-        #open plain_text.txt as file
-        #gets the new pasword that the user added and replaces it with the changed one
-        #
+    while True:
+        start3 = input("Change password or Quit: ").strip().lower()
+        if start3 in ["change password", "quit"]:
+            if start3 == "Quit":
+                print("Goodbye!")
+                sys.exit(0)
+            elif start3 == "Change password":
+                new_password = input("New password: ")
+                hashed_password = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt())
+                rows = []
+                try:
+                    with open("plain_text.txt", "r") as file:
+                            for line in file:
+                                user, password = line.strip().split(",")
+                                if user == username:
+                                    rows.append(f"{user},{hashed_password.decode()}")
+                                else:
+                                    rows.append(line.strip())
+                except FileNotFoundError:
+                    print("Error: The file 'plain_text.txt' does not exist.")
+                    sys.exit(0)
+                with open("plain_text.txt", "w") as file:
+                    file.write("\n".join(rows) + "\n")
+                print("Password changed successfully!")
 
 def main():
     while True:
@@ -76,7 +85,7 @@ def main():
             elif start == "quit":
             #returns to terminal 
                 print("Goodbye")
-                sys.exit()
+                sys.exit(0)
         print("Please input one of the previous options")
 
 def ispasswordvalid(password):
@@ -90,6 +99,5 @@ def ispasswordvalid(password):
         print("Password must contain at least one letter.")
         return False
     return True
-
 
 main() #cheeky main 
