@@ -29,12 +29,15 @@ def login():
             try:
                 with open("plain_text.txt", "r") as file:
                     credentials = [line.strip() for line in file]
-                user_pass = f"{username},{password}"
-                if user_pass in credentials:
-                    print("logged in successfully")
-                    change_password()
-                else:
-                    print("username or password incorrect")
+                for line in credentials:
+                    stored_user, stored_pass = line.split(",")
+                    if stored_user == username:
+                        if bcrypt.checkpw(password.encode(), stored_pass.encode()):
+                            print("Logged in succesfully!")
+                            change_password()
+                        else:
+                            print("Incorrect username or password")
+                print("Incorrect username or password")
             except FileNotFoundError:
                 print("Error: The file 'plain_text.txt' does not exist.")
                 sys.exit(0)
@@ -47,8 +50,9 @@ def Register():
         if ispasswordvalid(new_password):
             try:
                 with open("plain_text.txt", "a") as file:
+                    hashed_pass = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt())
                     #writes the new password and username on a new line
-                    file.write(f"\n{new_username},{new_password}")
+                    file.write(f"\n{new_username},{hashed_pass.decode()}")
             except FileNotFoundError:
                 print("Error: The file 'plain_text.txt' does not exist.")
                 sys.exit(0)
